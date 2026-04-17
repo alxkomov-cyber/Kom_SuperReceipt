@@ -1,6 +1,7 @@
 import os
 import telebot
 import threading
+import tempfile
 from groq import Groq
 from dotenv import load_dotenv
 from flask import Flask
@@ -44,7 +45,8 @@ SYSTEM_PROMPT = """
 @bot.message_handler(content_types=['voice'])
 def handle_voice(message):
     msg = bot.reply_to(message, "⏳ Скачиваю аудио...")
-    file_name = f"voice_{message.message_id}.ogg"
+    temp_dir = tempfile.gettempdir()
+    file_name = os.path.join(temp_dir, f"voice_{message.message_id}.ogg")
     
     try:
         # Скачиваем файл
