@@ -74,7 +74,8 @@ def handle_voice(message):
         
         # Обработка текста
         response = groq_client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+        #    model="llama-3.3-70b-versatile",
+            model="qwen/qwen3.6-27b",
             messages=[
                 {"role": "system", "content": SYSTEM_PROMPT},
                 {"role": "user", "content": f"Исходный текст: {raw_text}"}
