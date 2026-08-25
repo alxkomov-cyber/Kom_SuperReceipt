@@ -80,7 +80,7 @@ def handle_voice(message):
                 {"role": "user", "content": f"Исходный текст: {raw_text}"}
             ],
             temperature=0.3,
-            max_tokens=8000 # <--- УВЕЛИЧИЛИ ЛИМИТ ДО 8000, чтобы хватало на "размышления"
+            max_tokens=4096 # <--- Идеальный баланс. Не превысит лимит в 8000 TPM
         )
         
         clean_text = response.choices[0].message.content.strip()
