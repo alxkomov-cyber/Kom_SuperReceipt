@@ -86,9 +86,21 @@ def handle_voice(message):
         
         clean_text = response.choices[0].message.content.strip()
         
-        # Отправка
-        bot.reply_to(message, clean_text)
+        # --- ЗАЩИТА ОТ ОШИБКИ "message is too long" ---
+        import re
+        # 1. Вырезаем внутренние "мысли" нейросети (если она их написала в тегах <think>)
+        clean_text = re.sub(r'<think>.*?</think>', '', clean_text, flags=re.DOTALL).strip()
+        
+        # 2. Если текст всё равно длиннее 4000 символов, разбиваем его на части
+        if len(clean_text) > 4000:
+            for i in range(0, len(clean_text), 4000):
+                bot.reply_to(message, clean_text[i:i+4000])
+        else:
+            bot.reply_to(message, clean_text)
+            
+        # 3. Удаляем статус "Создаю красивый текст..." ТОЛЬКО после успешной отправки
         bot.delete_message(chat_id=message.chat.id, message_id=msg.message_id)
+        # --- КОНЕЦ БЛОКА ЗАЩИТЫ ---
         
     except Exception as e:
         bot.edit_message_text(f"Произошла ошибка: {e}", chat_id=message.chat.id, message_id=msg.message_id)
